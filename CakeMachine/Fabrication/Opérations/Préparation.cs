@@ -4,7 +4,7 @@ using CakeMachine.Utils;
 
 namespace CakeMachine.Fabrication.Opérations;
 
-internal class Préparation : IOpération<Plat, GâteauCru>
+internal class Préparation : IMachine<Plat, GâteauCru>
 {
     private readonly (TimeSpan Min, TimeSpan Max) _tempsPréparation;
     private readonly ThreadSafeRandomNumberGenerator _rng;
@@ -22,11 +22,11 @@ internal class Préparation : IOpération<Plat, GâteauCru>
     }
 
     /// <inheritdoc />
-    async Task<GâteauCru> IOpération<Plat, GâteauCru>.ProduireAsync(Plat input, CancellationToken token)
+    async Task<GâteauCru> IMachine<Plat, GâteauCru>.ProduireAsync(Plat input, CancellationToken token)
         => await PréparerAsync(input).ConfigureAwait(false);
 
     /// <inheritdoc />
-    GâteauCru IOpération<Plat, GâteauCru>.Produire(Plat input)
+    GâteauCru IMachine<Plat, GâteauCru>.Produire(Plat input)
         => Préparer(input);
 
     public int PlacesRestantes => _lock.PlacesRestantes;

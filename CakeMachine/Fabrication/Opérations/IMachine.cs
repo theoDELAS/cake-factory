@@ -1,6 +1,6 @@
 ﻿namespace CakeMachine.Fabrication.Opérations;
 
-internal interface IOpération<in TInput, TOuput>
+internal interface IMachine<in TInput, TOuput>
 {
     Task<TOuput> ProduireAsync(TInput input, CancellationToken token);
     TOuput Produire(TInput input);
