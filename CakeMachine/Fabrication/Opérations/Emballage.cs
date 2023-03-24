@@ -4,7 +4,7 @@ using CakeMachine.Utils;
 
 namespace CakeMachine.Fabrication.Opérations;
 
-internal class Emballage
+internal class Emballage : IOpération<GâteauCuit, GâteauEmballé>
 {
     private readonly EngorgementProduction _lock;
     private readonly TimeSpan _tempsEmballage;
@@ -52,4 +52,13 @@ internal class Emballage
             _lock.Release();
         }
     }
+
+    /// <inheritdoc />
+    async Task<GâteauEmballé> IOpération<GâteauCuit, GâteauEmballé>.ProduireAsync(GâteauCuit input,
+        CancellationToken token)
+        => await EmballerAsync(input).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    GâteauEmballé IOpération<GâteauCuit, GâteauEmballé>.Produire(GâteauCuit input)
+        => Emballer(input);
 }

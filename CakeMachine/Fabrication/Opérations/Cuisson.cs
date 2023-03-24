@@ -4,7 +4,7 @@ using CakeMachine.Utils;
 
 namespace CakeMachine.Fabrication.Opérations;
 
-internal class Cuisson
+internal class Cuisson : IOpération<GâteauCru[], GâteauCuit[]>
 {
     private readonly ThreadSafeRandomNumberGenerator _rng;
     private readonly TimeSpan _tempsCuisson;
@@ -64,4 +64,16 @@ internal class Cuisson
             _lock.Release();
         }
     }
+
+    /// <inheritdoc />
+    async Task<GâteauCuit[]> IOpération<GâteauCru[], GâteauCuit[]>.ProduireAsync(GâteauCru[] input,
+        CancellationToken token)
+        => await CuireAsync(input).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    GâteauCuit[] IOpération<GâteauCru[], GâteauCuit[]>.Produire(GâteauCru[] input)
+        => Cuire(input);
+
+    /// <inheritdoc />
+    public int PlacesRestantes => _lock.PlacesRestantes;
 }
