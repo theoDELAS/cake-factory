@@ -52,8 +52,13 @@ internal class Emballage : IMachine<GâteauCuit, GâteauEmballé>
 
         try
         {
+            _traceSink.RecordTrace(new ProductionTraceStep(gâteau, EtapeProduction.DébutEmballage, DateTime.Now));
+
             await AttenteIncompressible.AttendreAsync(_tempsEmballage).ConfigureAwait(false);
-            return new GâteauEmballé(gâteau, _rng.NextBoolean(1 - _defectRate));
+
+            var gâteauEmballé = new GâteauEmballé(gâteau, _rng.NextBoolean(1 - _defectRate));
+            _traceSink.RecordTrace(new ProductionTraceStep(gâteauEmballé, EtapeProduction.FinEmballage, DateTime.Now));
+            return gâteauEmballé;
         }
         finally
         {

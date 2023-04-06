@@ -69,6 +69,7 @@ internal class SingleAlgorithmRunner
                 var gâteau = producteur.Current;
 
                 if (!PeutContinuer()) break;
+                traceSink.RecordTrace(new ProductionTraceStep(gâteau, EtapeProduction.Livraison, DateTime.Now));
                 gâteauxProduits.Add(producteur.Current);
                 if (gâteau.EstConforme) gâteauxConformes++;
             }
@@ -90,6 +91,7 @@ internal class SingleAlgorithmRunner
                 var gâteau = producteur.Current;
 
                 if (!PeutContinuer()) break;
+                traceSink.RecordTrace(new ProductionTraceStep(gâteau, EtapeProduction.Livraison, DateTime.Now));
                 gâteauxProduits.Add(gâteau);
                 if (gâteau.EstConforme) gâteauxConformes++;
             }

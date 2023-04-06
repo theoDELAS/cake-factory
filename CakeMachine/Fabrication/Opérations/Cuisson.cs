@@ -67,6 +67,10 @@ internal class Cuisson : IMachine<GâteauCru[], GâteauCuit[]>
         try
         {
             VérifierNombreGâteaux(gâteaux);
+
+            foreach (var gâteauCru in gâteaux)
+                _traceSink.RecordTrace(new ProductionTraceStep(gâteauCru, EtapeProduction.DébutCuisson, DateTime.Now));
+
             await AttenteIncompressible.AttendreAsync(_tempsCuisson).ConfigureAwait(false);
             return Factory(gâteaux);
         }

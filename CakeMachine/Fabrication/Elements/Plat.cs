@@ -2,7 +2,7 @@
 
 internal class Plat : IConforme
 {
-    private Guid _guidPlat = Guid.NewGuid();
+    private readonly Guid _guidPlat = Guid.NewGuid();
 
     /// <inheritdoc />
     public bool EstConforme => true;

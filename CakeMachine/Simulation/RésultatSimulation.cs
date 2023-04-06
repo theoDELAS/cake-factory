@@ -2,6 +2,7 @@
 using CakeMachine.Fabrication.Elements;
 using CakeMachine.Fabrication.Tracing;
 using CakeMachine.Simulation.Algorithmes;
+using CakeMachine.Simulation.TraceAnalysis;
 
 namespace CakeMachine.Simulation;
 
@@ -33,6 +34,13 @@ internal record RésultatSimulation(
         builder.Append($"mis {DestinationPlats[DestinationPlat.Rebut] + DestinationPlats[DestinationPlat.LivréNonConforme]} éléments au rebut, ");
         builder.Append($"perdu {DestinationPlats[DestinationPlat.Perdu]} plats lors du traitement ");
         builder.Append($"en {Temps.TotalSeconds:F}s");
+
+        builder.AppendLine();
+        var chronométrages = Trace
+            .GroupBy(trace => trace.Objet.PlatSousJacent)
+            .Select(groupe => new ChronométragePlat(groupe));
+        builder.Append(new AnalyseChronométragePlats(chronométrages));
+
         return builder.ToString();
     }
 }
