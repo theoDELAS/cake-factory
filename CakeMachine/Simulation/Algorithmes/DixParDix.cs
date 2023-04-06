@@ -62,7 +62,7 @@ internal class DixParDix : Algorithme
 
         while (!token.IsCancellationRequested)
         {
-            var plats = usine.StockInfiniPlats.Take(10);
+            var plats = usine.StockInfiniPlats.Take(1);
 
             var gâteauxCrus = plats
                 .Select(postePréparation.PréparerAsync)
