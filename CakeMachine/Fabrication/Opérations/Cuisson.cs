@@ -1,7 +1,6 @@
 ﻿using CakeMachine.Fabrication.Elements;
 using CakeMachine.Fabrication.Paramètres;
 using CakeMachine.Utils;
-using CakeMachine.Utils.CakeMachine.Utils;
 
 namespace CakeMachine.Fabrication.Opérations;
 
