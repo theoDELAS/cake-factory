@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using CakeMachine.Fabrication.Elements;
+using CakeMachine.Fabrication.Tracing;
 using CakeMachine.Simulation.Algorithmes;
 
 namespace CakeMachine.Simulation;
@@ -8,7 +9,8 @@ internal record RésultatSimulation(
         Algorithme Algorithme,
         bool IsSync,
         TimeSpan Temps,
-        IReadOnlyDictionary<DestinationPlat, uint> DestinationPlats)
+        IReadOnlyDictionary<DestinationPlat, uint> DestinationPlats,
+        IEnumerable<ProductionTraceStep> Trace)
     : IComparable<RésultatSimulation>
 {
     public int CompareTo(RésultatSimulation? other)
