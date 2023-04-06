@@ -1,4 +1,4 @@
-﻿using CakeMachine.Fabrication.Paramètres;
+using CakeMachine.Fabrication.Paramètres;
 using CakeMachine.Utils;
 
 namespace CakeMachine.Fabrication.ContexteProduction;
@@ -21,8 +21,7 @@ internal class UsineBuilder : IConfigurationUsine
 
         _paramètres = new ParamètresUsine(1, 1, 1, paramètresPréparation, paramètresCuisson, paramètresEmballage);
     }
-
-
+        
     public Usine Build() => new (_rng, _paramètres);
 
     /// <inheritdoc />

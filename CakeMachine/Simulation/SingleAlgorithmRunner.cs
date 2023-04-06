@@ -23,12 +23,12 @@ internal class SingleAlgorithmRunner
 
     public async Task<RésultatSimulation?> ProduirePendantAsync(TimeSpan timeSpan, bool syncAlgorithm)
         => AlgorithmSupports(syncAlgorithm) 
-            ? await Produire(tuple => tuple.TempsÉcoulé >= timeSpan, syncAlgorithm) 
+            ? await Produire(tuple => tuple.TempsÉcoulé >= timeSpan, syncAlgorithm).ConfigureAwait(false)
             : null;
 
     public async Task<RésultatSimulation?> ProduireNGâteauxAsync(uint nombreGâteaux, bool syncAlgorithm)
         => AlgorithmSupports(syncAlgorithm) 
-            ? await Produire(tuple => tuple.GâteauxValidesProduits >= nombreGâteaux, syncAlgorithm) 
+            ? await Produire(tuple => tuple.GâteauxValidesProduits >= nombreGâteaux, syncAlgorithm).ConfigureAwait(false)
             : null;
 
     private async Task<RésultatSimulation> Produire(
@@ -77,7 +77,7 @@ internal class SingleAlgorithmRunner
 
             while (PeutContinuer())
             {
-                if (!await producteur.MoveNextAsync())
+                if (!await producteur.MoveNextAsync().ConfigureAwait(false))
                     throw new InvalidOperationException(
                         $"L'algorithme {_algorithme} n'a pas été capable de produire suffisamment de gâteaux.");
 

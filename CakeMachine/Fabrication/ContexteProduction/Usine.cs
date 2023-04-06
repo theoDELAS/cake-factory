@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using CakeMachine.Fabrication.Elements;
 using CakeMachine.Fabrication.Opérations;
 using CakeMachine.Fabrication.Paramètres;
