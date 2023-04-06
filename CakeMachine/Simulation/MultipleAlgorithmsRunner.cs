@@ -20,8 +20,8 @@ internal class MultipleAlgorithmsRunner
 
         foreach (var runner in _runners)
         {
-            var sync = await runner.ProduirePendantAsync(timeSpan, true);
-            var async = await runner.ProduirePendantAsync(timeSpan, false);
+            var sync = await runner.ProduirePendantAsync(timeSpan, true).ConfigureAwait(false);
+            var async = await runner.ProduirePendantAsync(timeSpan, false).ConfigureAwait(false);
 
             if (async is not null) résultats.Add(async);
             if (sync is not null) résultats.Add(sync);
@@ -36,8 +36,8 @@ internal class MultipleAlgorithmsRunner
 
         foreach (var runner in _runners)
         {
-            var sync = await runner.ProduireNGâteauxAsync(nombreGâteaux, true);
-            var async = await runner.ProduireNGâteauxAsync(nombreGâteaux, false);
+            var sync = await runner.ProduireNGâteauxAsync(nombreGâteaux, true).ConfigureAwait(false);
+            var async = await runner.ProduireNGâteauxAsync(nombreGâteaux, false).ConfigureAwait(false);
 
             if (async is not null) résultats.Add(async);
             if (sync is not null) résultats.Add(sync);

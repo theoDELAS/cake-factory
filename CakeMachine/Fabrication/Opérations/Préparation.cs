@@ -1,10 +1,11 @@
 ﻿using CakeMachine.Fabrication.Elements;
 using CakeMachine.Fabrication.Paramètres;
 using CakeMachine.Utils;
+using CakeMachine.Utils.CakeMachine.Utils;
 
 namespace CakeMachine.Fabrication.Opérations;
 
-internal class Préparation
+internal class Préparation : IMachine<Plat, GâteauCru>
 {
     private readonly (TimeSpan Min, TimeSpan Max) _tempsPréparation;
     private readonly ThreadSafeRandomNumberGenerator _rng;
@@ -20,6 +21,14 @@ internal class Préparation
         _defectRate = paramètres.DefectRate;
         _lock = new EngorgementProduction(paramètres.NombrePlaces);
     }
+
+    /// <inheritdoc />
+    async Task<GâteauCru> IMachine<Plat, GâteauCru>.ProduireAsync(Plat input, CancellationToken token)
+        => await PréparerAsync(input).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    GâteauCru IMachine<Plat, GâteauCru>.Produire(Plat input)
+        => Préparer(input);
 
     public int PlacesRestantes => _lock.PlacesRestantes;
 
@@ -40,11 +49,11 @@ internal class Préparation
 
     public async Task<GâteauCru> PréparerAsync(Plat plat)
     {
-        await _lock.WaitAsync();
+        await _lock.WaitAsync().ConfigureAwait(false);
 
         try
         {
-            await AttenteIncompressible.AttendreAsync(TempsPréparation);
+            await AttenteIncompressible.AttendreAsync(TempsPréparation).ConfigureAwait(false);
             return new GâteauCru(plat, _rng.NextBoolean(1 - _defectRate));
         }
         finally

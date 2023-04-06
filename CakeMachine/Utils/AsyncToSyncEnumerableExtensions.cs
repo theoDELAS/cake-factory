@@ -11,4 +11,10 @@ internal static class AsyncToSyncEnumerableExtensions
 
         return list;
     }
+
+    public static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(this IEnumerable<T> enumerable)
+    {
+        foreach (var element in enumerable)
+            yield return element;
+    }
 }

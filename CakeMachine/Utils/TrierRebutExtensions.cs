@@ -5,7 +5,7 @@ namespace CakeMachine.Utils;
 
 internal static class TrierRebutExtensions
 {
-    public static IEnumerable<T> TrierRebut<T>(this IEnumerable<T> elements, Usine usine)
+    private static IEnumerable<T> TrierRebut<T>(this IEnumerable<T> elements, Usine usine)
         where T : IConforme
     {
         foreach (var conforme in elements)

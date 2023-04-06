@@ -1,10 +1,11 @@
 ﻿using CakeMachine.Fabrication.Elements;
 using CakeMachine.Fabrication.Paramètres;
 using CakeMachine.Utils;
+using CakeMachine.Utils.CakeMachine.Utils;
 
 namespace CakeMachine.Fabrication.Opérations;
 
-internal class Cuisson
+internal class Cuisson : IMachine<GâteauCru[], GâteauCuit[]>
 {
     private readonly ThreadSafeRandomNumberGenerator _rng;
     private readonly TimeSpan _tempsCuisson;
@@ -51,12 +52,12 @@ internal class Cuisson
 
     public async Task<GâteauCuit[]> CuireAsync(params GâteauCru[] gâteaux)
     {
-        await _lock.WaitAsync();
+        await _lock.WaitAsync().ConfigureAwait(false);
 
         try
         {
             VérifierNombreGâteaux(gâteaux);
-            await AttenteIncompressible.AttendreAsync(_tempsCuisson);
+            await AttenteIncompressible.AttendreAsync(_tempsCuisson).ConfigureAwait(false);
             return Factory(gâteaux);
         }
         finally
@@ -64,4 +65,16 @@ internal class Cuisson
             _lock.Release();
         }
     }
+
+    /// <inheritdoc />
+    async Task<GâteauCuit[]> IMachine<GâteauCru[], GâteauCuit[]>.ProduireAsync(GâteauCru[] input,
+        CancellationToken token)
+        => await CuireAsync(input).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    GâteauCuit[] IMachine<GâteauCru[], GâteauCuit[]>.Produire(GâteauCru[] input)
+        => Cuire(input);
+
+    /// <inheritdoc />
+    public int PlacesRestantes => _lock.PlacesRestantes;
 }
