@@ -1,5 +1,6 @@
 ﻿using CakeMachine.Fabrication.Elements;
 using CakeMachine.Fabrication.Paramètres;
+using CakeMachine.Fabrication.Tracing;
 using CakeMachine.Utils;
 
 namespace CakeMachine.Fabrication.Opérations;
@@ -8,15 +9,17 @@ internal class Préparation : IMachine<Plat, GâteauCru>
 {
     private readonly (TimeSpan Min, TimeSpan Max) _tempsPréparation;
     private readonly ThreadSafeRandomNumberGenerator _rng;
+    private readonly ITraceSink _traceSink;
     private readonly double _defectRate;
 
     private readonly EngorgementProduction _lock;
     private TimeSpan TempsPréparation => _rng.NextDouble() * _tempsPréparation.Min + (_tempsPréparation.Max - _tempsPréparation.Min);
 
-    public Préparation(ThreadSafeRandomNumberGenerator rng, ParamètresPréparation paramètres)
+    public Préparation(ThreadSafeRandomNumberGenerator rng, ParamètresPréparation paramètres, ITraceSink traceSink)
     {
         _tempsPréparation = (paramètres.TempsMin, paramètres.TempsMax);
         _rng = rng;
+        _traceSink = traceSink;
         _defectRate = paramètres.DefectRate;
         _lock = new EngorgementProduction(paramètres.NombrePlaces);
     }
@@ -37,8 +40,13 @@ internal class Préparation : IMachine<Plat, GâteauCru>
 
         try
         {
+            _traceSink.RecordTrace(new ProductionTraceStep(plat, EtapeProduction.DebutPréparation, DateTime.Now));
+
             AttenteIncompressible.Attendre(TempsPréparation);
-            return new GâteauCru(plat, _rng.NextBoolean(1 - _defectRate));
+            var gâteauCru = new GâteauCru(plat, _rng.NextBoolean(1 - _defectRate));
+
+            _traceSink.RecordTrace(new ProductionTraceStep(gâteauCru, EtapeProduction.FinPréparation, DateTime.Now));
+            return gâteauCru;
         } 
         finally
         {
@@ -52,8 +60,14 @@ internal class Préparation : IMachine<Plat, GâteauCru>
 
         try
         {
+            _traceSink.RecordTrace(new ProductionTraceStep(plat, EtapeProduction.DebutPréparation, DateTime.Now));
+
             await AttenteIncompressible.AttendreAsync(TempsPréparation).ConfigureAwait(false);
-            return new GâteauCru(plat, _rng.NextBoolean(1 - _defectRate));
+
+            var gâteauCru = new GâteauCru(plat, _rng.NextBoolean(1 - _defectRate));
+
+            _traceSink.RecordTrace(new ProductionTraceStep(gâteauCru, EtapeProduction.FinPréparation, DateTime.Now));
+            return gâteauCru;
         }
         finally
         {
